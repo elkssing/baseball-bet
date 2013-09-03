@@ -29,28 +29,20 @@
 		       (:REGISTER (:GREEDY-REPETITION 1 NIL :DIGIT-CLASS)) #\<))
 	 (losses-regex '(:SEQUENCE "\"Losses\">"
 			 (:REGISTER (:GREEDY-REPETITION 1 NIL :DIGIT-CLASS)) #\<))
-	 (bos "/mlb/teams/bos")
-	 (stl "/mlb/teams/stl")
-	 (rd-al-wins (wins-or-losses wins-regex raw-standings
-				     (scan-start bos raw-standings)))
-	 (rd-al-losses (wins-or-losses losses-regex raw-standings
-				       (scan-start bos raw-standings)))
-	 (rd-nl-wins (wins-or-losses wins-regex raw-standings
-				     (scan-start stl raw-standings)))
-	 (rd-nl-losses (wins-or-losses losses-regex raw-standings
-				       (scan-start stl raw-standings)))
+	 (bos-start (scan-start "/mlb/teams/bos" raw-standings))
+	 (rd-al-wins (wins-or-losses wins-regex raw-standings bos-start))
+	 (rd-al-losses (wins-or-losses losses-regex raw-standings bos-start))
+	 (stl-start (scan-start "/mlb/teams/stl" raw-standings))
+	 (rd-nl-wins (wins-or-losses wins-regex raw-standings stl-start))
+	 (rd-nl-losses (wins-or-losses losses-regex raw-standings stl-start))
 	 (rd-ws (+ rd-al-wins rd-nl-wins))
 	 (rd-ls (+ rd-al-losses rd-nl-losses))
-	 (det "/mlb/teams/det")
-	 (atl "/mlb/teams/atl")
-	 (se-al-wins (wins-or-losses wins-regex raw-standings
-				     (scan-start det raw-standings)))
-	 (se-al-losses (wins-or-losses losses-regex raw-standings
-				       (scan-start det raw-standings)))
-	 (se-nl-wins (wins-or-losses wins-regex raw-standings
-				     (scan-start atl raw-standings)))
-	 (se-nl-losses (wins-or-losses losses-regex raw-standings
-				       (scan-start atl raw-standings)))
+	 (det-start (scan-start "/mlb/teams/det" raw-standings))
+	 (se-al-wins (wins-or-losses wins-regex raw-standings det-start))
+	 (se-al-losses (wins-or-losses losses-regex raw-standings det-start))
+	 (atl-start (scan-start "/mlb/teams/atl" raw-standings))
+	 (se-nl-wins (wins-or-losses wins-regex raw-standings atl-start))
+	 (se-nl-losses (wins-or-losses losses-regex raw-standings atl-start))
 	 (se-ws (+ se-al-wins se-nl-wins))
 	 (se-ls (+ se-al-losses se-nl-losses)))
     (multiple-value-bind (sec min hour date month year day) (get-decoded-time)
